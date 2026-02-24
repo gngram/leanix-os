@@ -6,5 +6,5 @@ in
 {
   nixpkgs.overlays = [
     myOverlay
-  ] ++ (config.nixpkgs.overlays or []);
+  ] ++ (config.nixpkgs.overlays or [ ]);
 }

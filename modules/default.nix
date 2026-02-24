@@ -1,5 +1,8 @@
 {
   imports = [
-    #./security/clam-av.nix
+    ./common
+    ./boot
+    ./home
+    ./apps
   ];
 }

@@ -17,7 +17,7 @@ let
         (map (p: "--exclude-dir=${p}") cfg.on-access-scanning.excludePath)
         ++ [ "--exclude-dir=/proc" "--exclude-dir=/sys" "--exclude-dir=/dev" ];
       socket = cfg.config.LocalSocket or defaultSocket;
-      extra  = cfg.on-access-scanning.config.extraArgs or [];
+      extra = cfg.on-access-scanning.config.extraArgs or [ ];
     in
     concatStringsSep " " ([
       "${pkgs.clamav}/bin/clamonacc"
@@ -51,12 +51,13 @@ let
         "--log=/var/log/clamav/periodic.log"
       ];
 
-      daemonArgs = if useClamd then [ "--multiscan" "--fdpass" ] else [];
-      extra = cfg.periodic-scanning.config.extraArgs or [];
+      daemonArgs = if useClamd then [ "--multiscan" "--fdpass" ] else [ ];
+      extra = cfg.periodic-scanning.config.extraArgs or [ ];
     in
-    concatStringsSep " " ( [ scanner ] ++ baseArgs ++ daemonArgs ++ excludeArgs ++ includeArgs ++ extra );
+    concatStringsSep " " ([ scanner ] ++ baseArgs ++ daemonArgs ++ excludeArgs ++ includeArgs ++ extra);
 
-in {
+in
+{
   options.services.clamavPlus = {
     # Top-level enable: turns on clamd and makes this module active.
     enable = mkEnableOption "ClamAV suite (clamd + optional on-access + periodic)";
@@ -83,13 +84,13 @@ in {
       enable = mkEnableOption "On-access scanning using clamonacc (fanotify)";
       includePath = mkOption {
         type = types.listOf types.path;
-        default = [];
+        default = [ ];
         example = [ "/home" "/var/downloads" ];
         description = "Directories to watch/scan on access.";
       };
       excludePath = mkOption {
         type = types.listOf types.path;
-        default = [];
+        default = [ ];
         example = [ "/var/cache" "/nix/store" ];
         description = "Directories to exclude from on-access scanning.";
       };
@@ -97,7 +98,7 @@ in {
         type = types.attrsOf (types.oneOf [ types.str types.path types.int types.bool (types.listOf types.str) ]);
         default = {
           quarantineDir = "/var/lib/clamav/quarantine";
-          extraArgs = []; # e.g.: [ "--max-filesize=100M" ]
+          extraArgs = [ ]; # e.g.: [ "--max-filesize=100M" ]
         };
         description = "Additional on-access settings (e.g., quarantineDir, extraArgs).";
       };
@@ -118,8 +119,8 @@ in {
       config = mkOption {
         type = types.attrsOf (types.oneOf [ types.str types.int types.bool (types.listOf types.str) ]);
         default = {
-          schedule = "daily";  # systemd OnCalendar (e.g., '02:30', 'hourly', 'daily', 'Mon..Fri 02:00')
-          extraArgs = [];      # e.g.: [ "--max-filesize=100M" "--bytecode=yes" ]
+          schedule = "daily"; # systemd OnCalendar (e.g., '02:30', 'hourly', 'daily', 'Mon..Fri 02:00')
+          extraArgs = [ ]; # e.g.: [ "--max-filesize=100M" "--bytecode=yes" ]
         };
         description = "Extra periodic scan settings; set `schedule` to a systemd OnCalendar value.";
       };
