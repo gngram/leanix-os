@@ -20,23 +20,6 @@
     docker
     sysstat
     statix
-    (google-chrome.override {
-      commandLineArgs = [
-        "--enable-features=UseOzonePlatform"
-        "--ozone-platform=x11"
-        "--disable-features=WaylandFractionalScaleV1,UseChromeOSDirectVideoDecoder,UseSkiaRenderer"
-      ];
-    })
-    (pkgs.slack.overrideAttrs (old: {
-      wrapperArgs = (old.wrapperArgs or [ ]) ++ [
-        "--add-flags"
-        "--disable-gpu"
-        "--add-flags"
-        "--disable-gpu-compositing"
-        "--add-flags"
-        "--use-gl=swiftshader"
-      ];
-    }))
   ];
 
 

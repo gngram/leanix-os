@@ -34,36 +34,8 @@
     programs.home-manager.enable = true;
     programs.vscode = {
       enable = true;
-      profiles.default.extensions = with pkgs.vscode-extensions; [
-        # Rust
-        rust-lang.rust-analyzer
-
-        # Go
-        golang.go
-
-        # Python
-        ms-python.python
-
-        # C/C++
-        ms-vscode.cpptools
-        ms-vscode.cpptools-extension-pack
-        ms-vscode.cmake-tools
-        twxs.cmake
-        vadimcn.vscode-lldb
-
-        # Nix
-        bbenoist.nix
-
-        # Git
-        mhutchie.git-graph
-        waderyan.gitblame
-        donjayamanne.githistory
-
-        # Project tools
-        alefragnani.project-manager
-      ];
+      mutableExtensionsDir = true; 
     };
-
     programs.bash = {
       enable = true;
 

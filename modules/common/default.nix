@@ -47,26 +47,12 @@ in
     # GNOME Desktop (Requested to use only GNOME)
     services.xserver.enable = true;
     services.displayManager.gdm.enable = true;
+    services.displayManager.gdm.banner = "
+     Welcome to Leanix!
+    ";
+    services.displayManager.autoLogin.enable = false;
+    services.displayManager.autoLogin.user = "gangaram";
     services.desktopManager.gnome.enable = true;
-    environment.gnome.excludePackages = (with pkgs; [
-      gnome-logs
-      gnome-maps
-      gnome-characters
-      gnome-connections
-      gnome-contacts
-      gnome-shell
-      gnome-control-center
-
-      gnome-tour
-      # The default GNOME email client
-      geary
-      # Any other defaults you don't want
-      gnome-contacts
-      gnome-maps
-      libreoffice
-      diffuse
-    ]);
-
     # Common Programs & Settings
     programs.nix-ld.enable = true;
     programs.direnv.enable = true;
@@ -83,6 +69,9 @@ in
     nix.settings.trusted-users = [ "root" "@wheel" ];
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
     nixpkgs.config.allowUnfree = true;
+    nixpkgs.overlays = [
+      (import ../../overlays/overlays.nix)
+    ];
 
     users.users.gangaram = {
       isNormalUser = true;
@@ -99,18 +88,17 @@ in
       gitFull
       nettools
       firefox
-      vscode
-      slack
       teams-for-linux
       ghostty
+      my-slack
+      my-google-chrome
     ];
+    environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     services.openssh.enable = true;
     networking.firewall.allowedTCPPorts = [ 22 445 139 8080 ];
     networking.firewall.allowedUDPPorts = [ 137 138 8080 ];
     system.stateVersion = "25.11";
-
-    # --- CONDITIONAL LOGIC (Uncommon Configs) ---
 
     # Bluetooth (File 1 specific)
     hardware.bluetooth.enable = mkIf cfg.enableBluetooth true;
