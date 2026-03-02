@@ -4,7 +4,7 @@
     ./hardware-configuration.nix
   ];
   my-nixos = {
-    hostname = "cosmic";
+    hostname = "leanix";
     enableBluetooth = true;
     enableNvidia = false;
   };
@@ -19,4 +19,12 @@
     gtkterm
     pdfstudio2024
   ];
+
+  programs.ssh.extraConfig = ''
+    host ghaf-net
+      hostname 192.168.0.101
+    host ghaf-host
+      hostname 192.168.100.2
+      proxyjump ghaf-net
+  '';
 }
