@@ -58,7 +58,8 @@
         ghaf = "cd /work/repositories/gngram/ghaf";
         givc = "cd /work/repositories/gngram/ghaf-givc";
         poc = "cd /work/repositories/gngram/poc-store";
-        edit = "${EDITOR:-vim} $(fzf)";
+        edit = "vim $(fzf)";
+        npedit = "notepad $(fzf)";
       };
 
       bashrcExtra = ''
