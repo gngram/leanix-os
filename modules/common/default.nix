@@ -50,9 +50,8 @@ in
     services.displayManager.gdm.banner = "
      Welcome to Leanix!
     ";
-    services.displayManager.autoLogin.enable = false;
-    services.displayManager.autoLogin.user = "gangaram";
     services.desktopManager.gnome.enable = true;
+    services.gnome.gnome-keyring.enable = lib.mkForce false;
     # Common Programs & Settings
     programs.nix-ld.enable = true;
     programs.direnv.enable = true;
@@ -66,6 +65,7 @@ in
       pulse.enable = true;
     };
 
+    
     nix.settings.trusted-users = [ "root" "@wheel" ];
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
     nixpkgs.config.allowUnfree = true;

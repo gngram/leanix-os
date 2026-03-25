@@ -10,6 +10,7 @@
       gtkterm
       nnn
       fzf
+      fd
       notepad-next
       pinta
       nomacs
@@ -41,14 +42,15 @@
 
       shellAliases = {
         build-lenovo = "nix build .#lenovo-x1-carbon-gen11-debug";
+        build-sys76 = "nix build .#system76-darp11-b-debug";
         locate = "ls -al /run/current-system/sw/bin/ | grep -in";
-        ghost = "rm -rf ~/.ssh/known_hosts; ssh -o StrictHostKeyChecking=no root@ghaf-host";
-        ghost-unknown = "ssh -o StrictHostKeyChecking=no root@ghaf-host";
-        ghaf-reset = "ssh -o StrictHostKeyChecking=no root@ghaf-host \"reboot\"";
-        ghaf-clean = "rm -rf ~/.ssh/known_hosts; ssh -o StrictHostKeyChecking=no root@ghaf-host \"nix-collect-garbage --delete-old\"";
-        lenovo-rebuild = "rm -rf ~/.ssh/known_hosts; nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host root@ghaf-host --no-reexec boot";
-        ghaf-sys76-rebuild = "rm -rf ~/.ssh/known_hosts; nixos-rebuild --flake .#system76-darp11-b-debug --target-host root@ghaf-host --no-reexec boot";
-        ghost-build-known = "nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host root@ghaf-host --no-reexec boot";
+        ghaf-host = "ssh -t -o StrictHostKeyChecking=no ghaf@192.168.0.101 'ssh -o StrictHostKeyChecking=no ghaf@ghaf-host'";
+        admin-vm = "ssh -t -o StrictHostKeyChecking=no ghaf@192.168.0.101 'ssh -o StrictHostKeyChecking=no ghaf@admin-vm'";
+        gui-vm = "ssh -t -o StrictHostKeyChecking=no ghaf@192.168.0.101 'ssh -o StrictHostKeyChecking=no ghaf@gui-vm'";
+        ghaf-lenovo = "rm -rf ~/.ssh/known_hosts; ghaf-rebuild 192.168.0.101 .#system76-darp11-b-debug boot";
+        ghaf-sys76 = "rm -rf ~/.ssh/known_hosts; ghaf-rebuild 192.168.0.101 .#lenovo-x1-carbon-gen11-debug boot";
+        fa = "sudo ghaf-flash -d /dev/sda -i ./result/disk1.raw.zst";
+        fb = "sudo ghaf-flash -d /dev/sdb -i ./result/disk1.raw.zst";
         fe = "sudo ghaf-flash -d /dev/sde -i ./result/disk1.raw.zst";
         ff = "sudo ghaf-flash -d /dev/sdf -i ./result/disk1.raw.zst";
         cdr = "cd /workspace/repositories/gngram";
@@ -56,7 +58,7 @@
         ghaf = "cd /work/repositories/gngram/ghaf";
         givc = "cd /work/repositories/gngram/ghaf-givc";
         poc = "cd /work/repositories/gngram/poc-store";
-        notepad = "NotepadNext";
+        edit = "${EDITOR:-vim} $(fzf)";
       };
 
       bashrcExtra = ''
@@ -89,8 +91,14 @@
                   eval "$(fnm env)"
                 fi
 
-                export EDITOR="$HOME/.nix-profile/bin/NotepadNext"
-                export VISUAL="$HOME/.nix-profile/bin/NotepadNext"
+                #Notepad aliasing
+                notepad() {
+                  NotepadNext "$@" > /dev/null 2>&1 &
+                }
+                export FZF_DEFAULT_COMMAND='fd --type f'
+
+                export EDITOR="${pkgs.vim}/bin/vim"
+                export VISUAL="${pkgs.notepad-next}/bin/NotepadNext"
                 export QT_QPA_PLATFORM=wayland
 
                 # fzf (completion & keybindings) — refer from nixpkgs
@@ -100,6 +108,9 @@
 
                 if [ -f "${pkgs.fzf}/share/fzf/key-bindings.bash" ]; then
                   source "${pkgs.fzf}/share/fzf/key-bindings.bash"
+                fi
+                if [ -f "$HOME/.user_bashrc" ]; then
+                  source "$HOME/.user_bashrc"
                 fi
       '';
     };

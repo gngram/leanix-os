@@ -9,8 +9,6 @@
     enableNvidia = false;
   };
 
-  # File 1 specific packages
-  users.users.gangaram.packages = with pkgs; [ binutils ];
   environment.systemPackages = with pkgs; [
     devenv
     meld
@@ -20,6 +18,9 @@
     pdfstudio2024
   ];
 
+  users.users.nixbld1 = {
+    isNormalUser = false;
+  };
   programs.ssh.extraConfig = ''
     host ghaf-net
       hostname 192.168.0.101
