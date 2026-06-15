@@ -8,6 +8,7 @@
   my-nixos = {
     enableNvidia = true;
     isBuilder = true;
+    enableKde = true;
   };
 
   # Hardware/Mounts specific to this machine

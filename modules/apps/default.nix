@@ -17,7 +17,7 @@
     teams-for-linux
     tree
     wget
-    docker
+    docker_29
     sysstat
     statix
   ];

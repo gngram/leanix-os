@@ -35,7 +35,7 @@
     programs.home-manager.enable = true;
     programs.vscode = {
       enable = true;
-      mutableExtensionsDir = true; 
+      mutableExtensionsDir = true;
     };
     programs.bash = {
       enable = true;

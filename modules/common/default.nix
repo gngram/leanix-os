@@ -14,6 +14,9 @@ in
       type = types.str;
       default = "leanix";
     };
+    enableGnome = mkEnableOption "Enable Gnome Desktop";
+    enableKde = mkEnableOption "Enable KDE Desktop";
+
   };
 
   config = {
@@ -39,19 +42,44 @@ in
       LC_TIME = "en_IN";
     };
 
+    # Tailscale
+    services.tailscale.enable = true;
+
+
+
     # Bootloader & Emulation
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
     boot.binfmt.emulatedSystems = [ "riscv64-linux" "aarch64-linux" ];
 
-    # GNOME Desktop (Requested to use only GNOME)
     services.xserver.enable = true;
-    services.displayManager.gdm.enable = true;
-    services.displayManager.gdm.banner = "
-     Welcome to Leanix!
-    ";
-    services.desktopManager.gnome.enable = true;
-    services.gnome.gnome-keyring.enable = lib.mkForce false;
+    services.displayManager = mkMerge [
+      (mkIf cfg.enableGnome {
+        gdm.enable = true;
+        gdm.banner = ''
+          Welcome to Leanix!
+        '';
+      })
+      (mkIf cfg.enableKde {
+        sddm.enable = true;
+        sddm.wayland.enable = true;
+        sddm.settings = {
+          Users = {
+            MinimumUid = 1000;
+            HideUsers = "build-user";
+          };
+        };
+      })
+    ];
+    services.desktopManager = mkMerge [
+      (mkIf cfg.enableGnome {
+        gnome.enable = true;
+      })
+      (mkIf cfg.enableKde {
+        plasma6.enable = true;
+      })
+    ];
+
     # Common Programs & Settings
     programs.nix-ld.enable = true;
     programs.direnv.enable = true;
@@ -65,7 +93,7 @@ in
       pulse.enable = true;
     };
 
-    
+
     nix.settings.trusted-users = [ "root" "@wheel" ];
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
     nixpkgs.config.allowUnfree = true;
@@ -96,8 +124,8 @@ in
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
     services.openssh.enable = true;
-    networking.firewall.allowedTCPPorts = [ 22 445 139 8080 ];
-    networking.firewall.allowedUDPPorts = [ 137 138 8080 ];
+    networking.firewall.allowedTCPPorts = [ 22 445 139 8080 41641 ];
+    networking.firewall.allowedUDPPorts = [ 137 138 8080 41641 ];
     system.stateVersion = "25.11";
 
     # Bluetooth (File 1 specific)
