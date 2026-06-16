@@ -8,7 +8,7 @@
   my-nixos = {
     enableNvidia = true;
     isBuilder = true;
-    enableKde = true;
+    enableXfce = true;
   };
 
   # Hardware/Mounts specific to this machine
@@ -30,7 +30,7 @@
 
   programs.ssh.extraConfig = ''
     host ghaf-net
-      hostname 192.168.0.101
+      hostname 192.168.0.102
     host ghaf-host
       hostname 192.168.100.2
       proxyjump ghaf-net

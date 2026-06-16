@@ -16,6 +16,7 @@ in
     };
     enableGnome = mkEnableOption "Enable Gnome Desktop";
     enableKde = mkEnableOption "Enable KDE Desktop";
+    enableXfce = mkEnableOption "Enable Xfce Desktop";
 
   };
 
@@ -52,7 +53,14 @@ in
     boot.loader.efi.canTouchEfiVariables = true;
     boot.binfmt.emulatedSystems = [ "riscv64-linux" "aarch64-linux" ];
 
-    services.xserver.enable = true;
+    services.xserver = {
+      enable = true;
+      desktopManager.xfce.enable = cfg.enableXfce;
+      displayManager.lightdm = {
+        enable = cfg.enableXfce;
+        greeters.gtk.enable = cfg.enableXfce;
+      };
+    };
     services.displayManager = mkMerge [
       (mkIf cfg.enableGnome {
         gdm.enable = true;
@@ -144,5 +152,11 @@ in
     # Builder/Server specific tweaks (File 2)
     systemd.targets.sleep.enable = mkIf cfg.isBuilder false;
     services.flatpak.enable = mkIf cfg.isBuilder true;
+    xdg.portal = {
+      enable = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
+    };
   };
 }

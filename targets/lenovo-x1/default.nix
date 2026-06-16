@@ -7,7 +7,7 @@
     hostname = "leanix";
     enableBluetooth = true;
     enableNvidia = false;
-    enableKde = true;
+    enableXfce = true;
   };
 
   environment.systemPackages = with pkgs; [
