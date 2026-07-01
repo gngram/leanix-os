@@ -43,6 +43,13 @@ in
       LC_TIME = "en_IN";
     };
 
+
+    # Docker
+    virtualisation.docker.enable = true;
+    virtualisation.docker.package = pkgs.docker_29;
+    
+
+    
     # Tailscale
     services.tailscale.enable = true;
 
@@ -113,7 +120,7 @@ in
       isNormalUser = true;
       shell = pkgs.bash;
       description = "Ganga Ram";
-      extraGroups = [ "networkmanager" "wheel" ] ++ (if cfg.isBuilder then [ "disk" ] else [ ]);
+      extraGroups = [ "networkmanager" "wheel" "docker" ] ++ (if cfg.isBuilder then [ "disk" ] else [ ]);
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINfyjcPGIRHEtXZgoF7wImA5gEY6ytIfkBeipz4lwnj6 Ganga.Ram@tii.ae"
       ];
